@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsService {
   static const String _temaKey = 'tema_chiaro';
-  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
   static Future<bool> isTemaChiaro() async {
     final prefs = await SharedPreferences.getInstance();

@@ -33,7 +33,7 @@ class Documento {
 }
 
 class BachecaService {
-  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
   static String _oggi() {
     final o = DateTime.now();

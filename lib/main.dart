@@ -7,6 +7,7 @@ import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   bool chiaro = false;
   try {
     chiaro = await SettingsService.isTemaChiaro();
@@ -14,19 +15,16 @@ void main() async {
     chiaro = false;
   }
   try {
-    await Firebase.initializeApp();
     await ClubService.inizializzaFondatori();
   } catch (e) {
-    // Cloud non raggiungibile: l'app parte comunque, riproverà dopo.
+    debugPrint('Errore inizializzazione cloud: $e');
   }
   runApp(MyApp(temaChiaro: chiaro));
 }
 
 class MyApp extends StatelessWidget {
   final bool temaChiaro;
-
   const MyApp({super.key, required this.temaChiaro});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

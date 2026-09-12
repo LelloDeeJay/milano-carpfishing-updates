@@ -131,7 +131,7 @@ class Evento {
 class ClubService {
   static const double defaultAlta = 50.0;
   static const double defaultBassa = 30.0;
-  static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  static FirebaseFirestore get _db => FirebaseFirestore.instance;
 
   static const List<String> nomiMesi = [
     'Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno',
@@ -216,7 +216,7 @@ class ClubService {
   }
 
   static Future<List<Socio>> getSoci() async {
-    final snap = await _db.collection('soci').get();
+    final snap = await _db.collection('soci').limit(50).get();
     return snap.docs.map((d) => Socio.fromJson(d.data())).toList();
   }
 

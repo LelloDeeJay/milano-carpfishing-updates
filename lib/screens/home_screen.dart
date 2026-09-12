@@ -10,6 +10,7 @@ import '../theme/app_theme.dart';
 import 'login_screen.dart';
 import '../services/settings_service.dart';
 import 'settings_screen.dart';
+import '../services/update_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,6 +50,50 @@ class _HomeScreenState extends State<HomeScreen> {
       _avvisi = avvisi;
       _documenti = documenti;
     });
+  }
+
+
+  bool _checkUpdate = false;
+
+  Future<void> _verificaUpdate() async {
+    setState(() => _checkUpdate = true);
+    final upd = await UpdateService.checkUpdate();
+    if (!mounted) return;
+    setState(() => _checkUpdate = false);
+    if (upd == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Sei già aggiornato all\'ultima versione'), backgroundColor: AppTheme.verde),
+      );
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.neroCard,
+        title: const Text('AGGIORNAMENTO DISPONIBILE', style: AppTheme.titoloMedio),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Nuova versione: ${upd.versione}', style: const TextStyle(color: AppTheme.bianco)),
+            const SizedBox(height: 8),
+            Text(upd.note.isEmpty ? 'Scarica e installa il nuovo APK.' : upd.note,
+                style: const TextStyle(color: AppTheme.grigio, fontSize: 13)),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('PIÙ TARDI', style: TextStyle(color: AppTheme.grigio))),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              UpdateService.apriDownload(upd.urlDownload);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.oro, foregroundColor: Colors.black),
+            child: const Text('AGGIORNA ORA'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _esci() async {
@@ -374,6 +419,20 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           style: ElevatedButton.styleFrom(backgroundColor: AppTheme.oro, foregroundColor: Colors.black, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
           child: const Text('IMPOSTAZIONI', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton.icon(
+          onPressed: _checkUpdate ? null : _verificaUpdate,
+          icon: _checkUpdate ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black)) : const Icon(Icons.system_update_alt),
+          label: const Text('VERIFICA AGGIORNAMENTI', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
+          style: ElevatedButton.styleFrom(backgroundColor: AppTheme.verde, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+        ),
+        const SizedBox(height: 10),
+        OutlinedButton.icon(
+          onPressed: () => UpdateService.apriReleases(),
+          icon: const Icon(Icons.history),
+          label: const Text('VEDI STORICO AGGIORNAMENTI', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
+          style: OutlinedButton.styleFrom(side: const BorderSide(color: AppTheme.oro), foregroundColor: AppTheme.oro, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
         ),
         const SizedBox(height: 10),
         OutlinedButton(

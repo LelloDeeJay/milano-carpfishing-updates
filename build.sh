@@ -32,9 +32,18 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "🎉 Build completata con successo!"
     echo "📦 Versione: $NEW_VERSION"
-    echo "📱 APK: build/app/outputs/flutter-apk/app-release.apk"
+    
+    # Rinomina l'APK con nome leggibile
+    APK_ORIGINALE="build/app/outputs/flutter-apk/app-release.apk"
+    APK_RINOMINATO="build/app/outputs/flutter-apk/La_Nuova_Milano_Carpfishing_V${VERSION_PART}.apk"
+    cp "$APK_ORIGINALE" "$APK_RINOMINATO"
+    
+    echo "📱 APK rinominato: $APK_RINOMINATO"
     echo ""
-    ls -lh build/app/outputs/flutter-apk/app-release.apk
+    ls -lh "$APK_RINOMINATO"
+    echo ""
+    echo "💡 Per pubblicare su GitHub:"
+    echo "   ./publish.sh"
 else
     echo "❌ Build fallita"
     exit 1

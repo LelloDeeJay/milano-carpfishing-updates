@@ -57,6 +57,14 @@ class UpdateService {
     }
   }
 
+
+  static Future<void> apriReleases() async {
+    final u = Uri.parse('https://github.com/$repo/releases');
+    if (await canLaunchUrl(u)) {
+      await launchUrl(u, mode: LaunchMode.externalApplication);
+    }
+  }
+
   static Future<void> apriDownload(String url) async {
     final u = Uri.parse(url);
     if (await canLaunchUrl(u)) {
