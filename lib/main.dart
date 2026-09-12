@@ -7,18 +7,27 @@ import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  
+  // Prova a inizializzare Firebase, ma non bloccare l'app se fallisce
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase non inizializzato: $e');
+  }
+  
   bool chiaro = false;
   try {
     chiaro = await SettingsService.isTemaChiaro();
   } catch (e) {
     chiaro = false;
   }
+  
   try {
     await ClubService.inizializzaFondatori();
   } catch (e) {
     debugPrint('Errore inizializzazione cloud: $e');
   }
+  
   runApp(MyApp(temaChiaro: chiaro));
 }
 
