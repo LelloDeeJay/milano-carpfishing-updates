@@ -78,7 +78,6 @@ App mobile per la gestione digitale del club **La Nuova Milano Carpfishing A.S.D
 ### Per il Presidente
 1. Installa l'app come sopra
 2. Dalla schermata di login, clicca **AREA PRESIDENTE** (link in basso)
-3. Inserisci il PIN: **3030**
 
 ---
 
