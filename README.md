@@ -25,7 +25,7 @@ App mobile per la gestione digitale del club **La Nuova Milano Carpfishing A.S.D
 - **Scelta tema chiaro/scuro** personalizzabile
 - **Aggiornamenti automatici** dell'app senza Play Store
 
-### 👑 Per il Presidente (PIN 3030)
+### 👑 Per il Presidente
 - **Pannello di controllo completo**
   - Crea nuovi soci manualmente
   - Attiva/disattiva tessere
