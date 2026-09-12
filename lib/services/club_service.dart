@@ -357,6 +357,12 @@ class ClubService {
     await _db.collection('soci').doc(id).update(mappa);
   }
 
+
+  static Future<String> rigeneraCodiceAttivazione(String id) async {
+    final nuovoCodice = _generaCodice();
+    await _db.collection('soci').doc(id).update({'codiceAttivazione': nuovoCodice});
+    return nuovoCodice;
+  }
   static Future<void> rimuoviSocio(String id) async {
     await _db.collection('soci').doc(id).delete();
   }
