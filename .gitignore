@@ -1,31 +1,7 @@
-# Flutter/Dart
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-build/
+# BLOCCA TUTTO - solo README e APK nelle release vanno su GitHub
+*
 
-# Android
-*.iml
-*.apk
-*.aab
-google-services.json
-key.properties
-android/.gradle/
-android/app/debug
-android/app/profile
-android/app/release
-
-# iOS
-DerivedData/
-*.ipa
-
-# IDE
-.idea/
-.vscode/
-
-# OS
-.DS_Store
-Thumbs.db
+# Permetti solo il README
+!.gitignore
+!README.md
+!publish.sh
