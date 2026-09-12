@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/club_service.dart';
+import '../services/pin_service.dart';
 import '../theme/app_theme.dart';
 import 'activation_screen.dart';
 import 'admin_screen.dart';
@@ -70,12 +71,50 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppTheme.neroCard,
         title: const Text('AREA PRESIDENTE', style: AppTheme.titoloMedio),
-        content: TextField(
-          controller: pin,
-          obscureText: true,
-          keyboardType: TextInputType.number,
-          style: const TextStyle(color: AppTheme.bianco),
-          decoration: const InputDecoration(hintText: 'PIN presidente'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: pin,
+              obscureText: true,
+              keyboardType: TextInputType.number,
+              maxLength: 6,
+              style: const TextStyle(color: AppTheme.bianco, fontSize: 20, letterSpacing: 4),
+              textAlign: TextAlign.center,
+              decoration: const InputDecoration(
+                hintText: 'PIN',
+                hintStyle: TextStyle(color: AppTheme.grigio),
+                counterText: '',
+              ),
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () async {
+                  final conferma = await showDialog<bool>(
+                    context: ctx,
+                    builder: (c2) => AlertDialog(
+                      backgroundColor: AppTheme.neroCard,
+                      title: const Text('PIN DIMENTICATO?', style: AppTheme.titoloMedio),
+                      content: const Text('Il PIN verrà ripristinato al default. Dovrai cambiarlo al prossimo accesso.', style: TextStyle(color: AppTheme.bianco)),
+                      actions: [
+                        TextButton(onPressed: () => Navigator.pop(c2, false), child: const Text('ANNULLA', style: TextStyle(color: AppTheme.grigio))),
+                        TextButton(onPressed: () => Navigator.pop(c2, true), child: const Text('RIPRISTINA', style: TextStyle(color: Colors.redAccent))),
+                      ],
+                    ),
+                  );
+                  if (conferma == true) {
+                    await PinService.resettaPinDefault();
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('PIN ripristinato al default'), backgroundColor: AppTheme.verde));
+                    Navigator.pop(ctx, false);
+                  }
+                },
+                child: const Text('PIN dimenticato?', style: TextStyle(color: AppTheme.oro, fontSize: 12)),
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('ANNULLA', style: TextStyle(color: AppTheme.grigio))),
@@ -84,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
     if (ok != true) return;
-    if (pin.text == '3030') {
+    if (await PinService.verificaPin(pin.text)) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('loggato', true);
       await prefs.setBool('admin', true);

@@ -5,6 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/bacheca_service.dart';
 import '../services/club_service.dart';
+import '../services/pin_service.dart';
 import '../theme/app_theme.dart';
 import 'settings_screen.dart';
 import '../services/update_service.dart';
@@ -641,6 +642,77 @@ class _AdminScreenState extends State<AdminScreen> {
     );
   }
 
+
+  Future<void> _cambiaPin() async {
+    final pinAttuale = TextEditingController();
+    final pinNuovo = TextEditingController();
+    final pinConferma = TextEditingController();
+    
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.neroCard,
+        title: const Text('CAMBIA PIN PRESIDENTE', style: AppTheme.titoloMedio),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: pinAttuale,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                style: const TextStyle(color: AppTheme.bianco),
+                decoration: const InputDecoration(labelText: 'PIN attuale', filled: true, fillColor: AppTheme.nero, counterText: ''),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: pinNuovo,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                style: const TextStyle(color: AppTheme.bianco),
+                decoration: const InputDecoration(labelText: 'Nuovo PIN', filled: true, fillColor: AppTheme.nero, counterText: ''),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: pinConferma,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                style: const TextStyle(color: AppTheme.bianco),
+                decoration: const InputDecoration(labelText: 'Conferma nuovo PIN', filled: true, fillColor: AppTheme.nero, counterText: ''),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('ANNULLA', style: TextStyle(color: AppTheme.grigio))),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('CAMBIA', style: TextStyle(color: AppTheme.oro))),
+        ],
+      ),
+    );
+    
+    if (ok != true) return;
+    
+    if (pinNuovo.text.length < 4) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Il PIN deve avere almeno 4 cifre'), backgroundColor: Colors.redAccent));
+      return;
+    }
+    if (pinNuovo.text != pinConferma.text) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('I PIN non coincidono'), backgroundColor: Colors.redAccent));
+      return;
+    }
+    if (!await PinService.verificaPin(pinAttuale.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('PIN attuale errato'), backgroundColor: Colors.redAccent));
+      return;
+    }
+    
+    await PinService.cambiaPin(pinNuovo.text);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('PIN cambiato con successo'), backgroundColor: AppTheme.verde));
+  }
+
   Future<void> _salvaPagamenti() async {
     await ClubService.salvaDatiPagamento(DatiPagamento(
       iban: _iban.text.trim().toUpperCase(),
@@ -770,6 +842,13 @@ class _AdminScreenState extends State<AdminScreen> {
             icon: const Icon(Icons.history),
             label: const Text('VEDI STORICO AGGIORNAMENTI', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
             style: OutlinedButton.styleFrom(side: const BorderSide(color: AppTheme.oro), foregroundColor: AppTheme.oro, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton.icon(
+            onPressed: _cambiaPin,
+            icon: const Icon(Icons.lock_reset),
+            label: const Text('CAMBIA PIN PRESIDENTE', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1)),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
           ),
           const SizedBox(height: 20),
           const Text('TUTTI I SOCI E TESSERE', style: AppTheme.titoloMedio),

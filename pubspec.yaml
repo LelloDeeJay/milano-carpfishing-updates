@@ -1,7 +1,7 @@
 name: milano_carpfishing_303_asd
 description: "App ufficiale La Nuova Milano Carpfishing A.S.D. - Sede 303 CFI"
 publish_to: "none"
-version: 1.0.15+15
+version: 1.0.16+16
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
