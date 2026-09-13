@@ -19,11 +19,11 @@ App mobile per la gestione digitale del club **La Nuova Milano Carpfishing A.S.D
 ## ✨ Funzionalità Principali
 
 ### 👤 Per i Soci
-- **Tesserino digitale** con QR code personale
+- **Tesserino digitale** con QR code personale e Stampa in PDF
 - **Attivazione tessera** tramite codice fornito dal presidente
 - **Profilo personale** con dati anagrafici completi
 - **Scelta tema chiaro/scuro** personalizzabile
-- **Aggiornamenti automatici** dell'app senza Play Store
+- **Aggiornamenti automatici** dell'app senza Play Store e App Web per Iphone e PC
 
 ### 👑 Per il Presidente
 - **Pannello di controllo completo**
@@ -78,14 +78,9 @@ App mobile per la gestione digitale del club **La Nuova Milano Carpfishing A.S.D
 ### Per il Presidente
 1. Installa l'app come sopra
 2. Dalla schermata di login, clicca **AREA PRESIDENTE** (link in basso)
-3. Inserisci il PIN: **3030**
 
 ---
 
 ## 🔄 Sistema Aggiornamenti
 
 L'app verifica automaticamente la presenza di nuove versioni su questo repository GitHub.
-
-### Per il Presidente (pubblicare aggiornamento)
-```bash
-./publish.sh
